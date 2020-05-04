@@ -5,9 +5,9 @@
   <subtitle>|Welcome</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
-  <updated>2020-05-03T22:01:53.007Z</updated>
-  <id>http://yoursite.com/</id>
+  <link href="https://perhacept.github.io/"/>
+  <updated>2020-05-04T11:13:18.964Z</updated>
+  <id>https://perhacept.github.io/</id>
   
   <author>
     <name>Perhacept</name>
@@ -17,11 +17,26 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>第一篇博客文章</title>
-    <link href="http://yoursite.com/uncategorized/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A02020-05-04/"/>
-    <id>http://yoursite.com/uncategorized/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A02020-05-04/</id>
-    <published>2020-05-03T21:39:55.000Z</published>
-    <updated>2020-05-03T22:01:53.007Z</updated>
+    <title>a</title>
+    <link href="https://perhacept.github.io/uncategorized/2020-05-04/a"/>
+    <id>https://perhacept.github.io/uncategorized/2020-05-04/a</id>
+    <published>2020-05-04T11:13:18.000Z</published>
+    <updated>2020-05-04T11:13:18.964Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>用hexo搭建博客</title>
+    <link href="https://perhacept.github.io/hexo/2020-05-04/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2"/>
+    <id>https://perhacept.github.io/hexo/2020-05-04/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2</id>
+    <published>2020-05-04T11:08:40.000Z</published>
+    <updated>2020-05-04T11:09:23.851Z</updated>
     
     <content type="html"><![CDATA[<h1 id="第一篇博客"><a href="#第一篇博客" class="headerlink" title="第一篇博客~"></a>第一篇博客~</h1><p>很开心终于整完了，稍后再完善wwwww</p>]]></content>
     
@@ -36,6 +51,14 @@
     </summary>
     
     
+      <category term="hexo" scheme="https://perhacept.github.io/categories/hexo/"/>
+    
+    
+      <category term="随笔" scheme="https://perhacept.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="hexo" scheme="https://perhacept.github.io/tags/hexo/"/>
+    
+      <category term="搭建博客" scheme="https://perhacept.github.io/tags/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/"/>
     
   </entry>
   
