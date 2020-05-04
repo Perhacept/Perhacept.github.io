@@ -2,9 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://perhacept.github.io/404.html</loc>
+    
+    <lastmod>2020-05-04T17:09:20.641Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://perhacept.github.io/movies/index.html</loc>
+    
+    <lastmod>2020-05-04T17:01:52.219Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://perhacept.github.io/about/index.html</loc>
     
-    <lastmod>2020-05-04T14:09:34.960Z</lastmod>
+    <lastmod>2020-05-04T17:00:48.671Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://perhacept.github.io/music/index.html</loc>
+    
+    <lastmod>2020-05-04T14:34:46.912Z</lastmod>
     
   </url>
   
@@ -12,20 +33,6 @@
     <loc>https://perhacept.github.io/photos/index.html</loc>
     
     <lastmod>2020-05-04T13:38:14.008Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://perhacept.github.io/movies/index.html</loc>
-    
-    <lastmod>2020-05-04T13:35:22.953Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://perhacept.github.io/music/index.html</loc>
-    
-    <lastmod>2020-05-04T13:31:11.697Z</lastmod>
     
   </url>
   
