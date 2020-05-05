@@ -3,8 +3,8 @@
   <entry>
     <title>unity的安卓端开发</title>
     <url>/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/2020-05-05/unity%E7%9A%84%E5%AE%89%E5%8D%93%E7%AB%AF%E5%BC%80%E5%8F%91/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>看到很多网友在unity的安卓部署上有障碍，于是我打算写这篇教程。</p>
-<h1 id="选择适合的unity版本"><a href="#选择适合的unity版本" class="headerlink" title="选择适合的unity版本"></a>选择适合的unity版本</h1><p>通常，我unity版本会选择早期的unity版本，而不是在最新的。因为早期版本的unity稳定、教程多。新版本有些地方增改幅度较大 跟着老教程没法做。<br>当然，更古早版本的也不推荐，过于旧的版本有功能限制，有些插件装不了。<br>综合来看，选择unity2017、unity2018比较合适。<br>以下的教程以unity 2017 为例。</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>看到很多网友在unity的安卓部署上有障碍，于是我写了这篇教程，希望对你有帮助，如果有问题，请给我留言。</p>
+<h1 id="选择适合的unity版本"><a href="#选择适合的unity版本" class="headerlink" title="选择适合的unity版本"></a>选择适合的unity版本</h1><p>通常，我会选择使用早期的unity版本，而不是在最新的。因为早期版本的unity稳定、教程多。新版本有些地方增改幅度较大 跟着老教程没法做。<br>当然，更古早版本的也不推荐，过于旧的版本有功能限制，有些插件装不了。<br>综合来看，选择unity2017、unity2018比较合适。<br>以下的教程以unity 2017 为例。</p>
 <h1 id="在手机上的快速测试-Remote"><a href="#在手机上的快速测试-Remote" class="headerlink" title="在手机上的快速测试-Remote"></a>在手机上的快速测试-Remote</h1><p>除却导出apk外，在写程序需要调试的时候，我建议下载unity的remote。部署好后，只需要通过usb接入电脑，就能快速调试。<br>以下安装部署步骤以unity remote 4为例。</p>
 <p><strong>注：以下教程仅针对安卓手机</strong></p>
 <ol>
@@ -15,7 +15,7 @@
 <li>在Unity项目的Edit-Project Settings-Editor中，会有Unity Remote选项，在Unity Remote-Device中，选择Any Android Device（换新项目的时候这里需要重新设定）<br>注：Unity Remote的横纵屏方向在Default orientation里改变</li>
 <li>运行游戏，可以看到手机游戏界面和电脑游戏界面一致</li>
 </ol>
-<h1 id="部署SDK和JDK，导出安卓APK"><a href="#部署SDK和JDK，导出安卓APK" class="headerlink" title="部署SDK和JDK，导出安卓APK"></a>部署SDK和JDK，导出安卓APK</h1><p>** 注：以下教程仅针对Windows平台 **</p>
+<h1 id="部署SDK和JDK，导出安卓APK"><a href="#部署SDK和JDK，导出安卓APK" class="headerlink" title="部署SDK和JDK，导出安卓APK"></a>部署SDK和JDK，导出安卓APK</h1><p><strong>注：以下教程仅针对Windows平台</strong></p>
 <p>jdk和sdk以及tools下载：<br>链接：<a href="https://pan.baidu.com/s/1et-ITBJe8OqYRk8n4jLzkA" target="_blank" rel="noopener">https://pan.baidu.com/s/1et-ITBJe8OqYRk8n4jLzkA</a><br>提取码：9jqy<br>下载好后有三个文件</p>
 <ul>
 <li>android-studio-ide-192.6392135-windows.exe</li>
@@ -27,7 +27,9 @@
 <h2 id="部署SDK和JDK的环境变量"><a href="#部署SDK和JDK的环境变量" class="headerlink" title="部署SDK和JDK的环境变量"></a>部署SDK和JDK的环境变量</h2><p>安装好jdk和sdk后，其他的详细教程跟着<a href="https://www.cnblogs.com/520YAOER/p/9705187.html?tdsourcetag=s_pctim_aiomsg" target="_blank" rel="noopener">这个教程</a>做就可以了（里面有需要用到SDK Manager，还会教你配置sdk和jdk的环境变量）。<br>快捷键 win+R ，运行cmd，输入android -h，回车，出现一长串list并且没有报错信息，说明SDK部署成功，如下图。<br><img src="/img/sdk5.png" alt="预览图5"><br>快捷键 win+R ，运行cmd，输入java，回车，出现一长串list并且没有报错信息，说明JDK部署成功，如下图。<br><img src="/img/jdk6.png" alt="预览图6"></p>
 <h2 id="unity导出apk"><a href="#unity导出apk" class="headerlink" title="unity导出apk"></a>unity导出apk</h2><p>需要注意的是，package name一定要修改，改成”com.Company.项目名”的格式，不然会报错。建议Build System改成Internal会快一些。<br><a href="https://blog.csdn.net/littlewhitelv/article/details/86596809" target="_blank" rel="noopener">详细教程</a></p>
 <h1 id="可能遇到的问题与解决方案"><a href="#可能遇到的问题与解决方案" class="headerlink" title="可能遇到的问题与解决方案"></a>可能遇到的问题与解决方案</h1><ol>
-<li>jdk版本与sdk版本不一致<br>方案：官网下载适配的jdk。<a href="https://www.oracle.com/java/technologies/javase-downloads.html" target="_blank" rel="noopener">官网下载链接</a><br>对应表表格<table>
+<li><p>jdk版本与sdk版本不一致<br> 方案：官网下载适配的jdk。</p>
+<p><a href="https://www.oracle.com/java/technologies/javase-downloads.html" target="_blank" rel="noopener">官网下载链接</a><br>对应表格</p>
+<table>
 <thead>
 <tr>
 <th>安卓版本</th>
@@ -45,13 +47,11 @@
 <td>23</td>
 <td>23</td>
 </tr>
-<tr>
-<td><a href="https://blog.csdn.net/u010825468/article/details/78909550" target="_blank" rel="noopener">版本对应表格详细版</a></td>
-<td></td>
-<td></td>
-</tr>
 </tbody></table>
 </li>
+</ol>
+<p><a href="https://blog.csdn.net/u010825468/article/details/78909550" target="_blank" rel="noopener">版本对应表格详细版</a></p>
+<ol start="2">
 <li>sdk版本与jdk版本不一致<br>方案：通过SDK Manager或者 Android Studio安装相应sdk。</li>
 <li>新版本sdk不适配老版本unity<br>方案：下载旧版本tools，并替换新版本tools。<br><a href="https://pan.baidu.com/s/1et-ITBJe8OqYRk8n4jLzkA" target="_blank" rel="noopener">下载链接,提取码:9jqy</a></li>
 <li>环境变量没有配置<br>方案：见<a href="https://www.cnblogs.com/520YAOER/p/9705187.html?tdsourcetag=s_pctim_aiomsg" target="_blank" rel="noopener">这个教程</a>。</li>
