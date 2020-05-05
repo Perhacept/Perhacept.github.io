@@ -61,7 +61,17 @@
 <p>  product 用于求多个可迭代对象的笛卡尔积(Cartesian Product)。</p>
 <p>  特性：product(A, B) 等价于 ((x,y) for x in A for y in B)。</p>
 <p>   一般使用形式：</p>
-  <figure class="highlight plain"><figcaption><span>repeat</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">  iterables是可迭代对象,repeat指定iterable重复几次。</span><br><span class="line"></span><br><span class="line">相关链接：</span><br><span class="line"></span><br><span class="line">+ [python itertools模块实现排列组合](https:&#x2F;&#x2F;python.01314.cn&#x2F;tag&#x2F;product)</span><br><span class="line">+ [快速理解笛卡尔积](https:&#x2F;&#x2F;jingyan.baidu.com&#x2F;article&#x2F;154b46318c269d69ca8f41a6.html)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 后记 #</span><br><span class="line"></span><br><span class="line">这是人工智能课（我的选修课，不是我的专业课）上布置的小作业，作业具体要求是：</span><br><span class="line"></span><br><span class="line">请在数字之间填上加减乘除或者空这五种符号，让等式可以成立，1 2 3 ... 9 &#x3D; 2008（空符号就是把两位或多位数字合成一个数字）</span><br><span class="line"></span><br><span class="line">作业源码：</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;python</span><br><span class="line">from itertools import product</span><br><span class="line"></span><br><span class="line">a &#x3D; &#39;1 2 3 4 5 6 7 8 9&#39;</span><br><span class="line">a1, a2, a3, a4, a5, a6, a7, a8, a9 &#x3D; a.split(&#39; &#39;)</span><br><span class="line"></span><br><span class="line">i &#x3D; [&#39;&#39;, &#39;+&#39;, &#39;-&#39;, &#39;*&#39;, &#39;&#x2F;&#39;]</span><br><span class="line"></span><br><span class="line">l &#x3D; list(product(i, repeat&#x3D;8))</span><br><span class="line"></span><br><span class="line">for item in l:</span><br><span class="line">    c &#x3D; a1+item[0]+a2+item[1]+a3+item[2]+a4+item[3]+a5+item[4]+a6+item[5]+a7+item[6]+a8+item[7]+a9</span><br><span class="line">    if eval(c) &#x3D;&#x3D; 2008:</span><br><span class="line">        print(c+&#39; &#x3D; 2008&#39;)</span><br></pre></td></tr></table></figure>
+<p>  itertools.product(*iterables, repeat=1) </p>
+<p>  iterables是可迭代对象,repeat指定iterable重复几次。</p>
+<p>相关链接：</p>
+<ul>
+<li><a href="https://python.01314.cn/tag/product" target="_blank" rel="noopener">python itertools模块实现排列组合</a></li>
+<li><a href="https://jingyan.baidu.com/article/154b46318c269d69ca8f41a6.html" target="_blank" rel="noopener">快速理解笛卡尔积</a></li>
+</ul>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>这是人工智能课（我的选修课，不是我的专业课）上布置的小作业，作业具体要求是：</p>
+<p>请在数字之间填上加减乘除或者空这五种符号，让等式可以成立，1 2 3 … 9 = 2008（空符号就是把两位或多位数字合成一个数字）</p>
+<p>作业源码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line">a = <span class="string">'1 2 3 4 5 6 7 8 9'</span></span><br><span class="line">a1, a2, a3, a4, a5, a6, a7, a8, a9 = a.split(<span class="string">' '</span>)</span><br><span class="line">i = [<span class="string">''</span>, <span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]</span><br><span class="line">l = list(product(i, repeat=<span class="number">8</span>))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> l:</span><br><span class="line">    c = a1+item[<span class="number">0</span>]+a2+item[<span class="number">1</span>]+a3+item[<span class="number">2</span>]+a4+item[<span class="number">3</span>]+a5+item[<span class="number">4</span>]+a6+item[<span class="number">5</span>]+a7+item[<span class="number">6</span>]+a8+item[<span class="number">7</span>]+a9</span><br><span class="line">    <span class="keyword">if</span> eval(c) == <span class="number">2008</span>:</span><br><span class="line">        print(c+<span class="string">' = 2008'</span>)</span><br></pre></td></tr></table></figure>
 
 <p>输出结果：</p>
 <p>1+2+345*6+7-8*9 = 2008<br>1+2+345*6-7*8-9 = 2008</p>
@@ -212,7 +222,7 @@
         <tag>教程</tag>
         <tag>原创</tag>
         <tag>C语言</tag>
-        <tag>编程</tag>
+        <tag>数据结构</tag>
       </tags>
   </entry>
   <entry>
