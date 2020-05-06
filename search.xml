@@ -109,49 +109,6 @@
       </tags>
   </entry>
   <entry>
-    <title>用Python3写万能论证机</title>
-    <url>/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/2020-05-05/%E7%94%A8Python3%E5%86%99%E4%B8%87%E8%83%BD%E8%AE%BA%E8%AF%81%E6%9C%BA/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="/img/114514.png" alt="xiaoguotu"><br>目的：等号左侧任意给定数，右侧给定数，输出以左侧数字经过一定运算达到的等式。</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line"><span class="comment">#万  能  论  证  机</span></span><br><span class="line">a = <span class="string">'1 1 4 5 1 4'</span></span><br><span class="line">a1, a2, a3, a4, a5, a6 = a.split(<span class="string">' '</span>)</span><br><span class="line">i = [<span class="string">''</span>, <span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]</span><br><span class="line">l = list(product(i, repeat=<span class="number">5</span>))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> l:</span><br><span class="line">    c = a1+item[<span class="number">0</span>]+a2+item[<span class="number">1</span>]+a3+item[<span class="number">2</span>]+a4+item[<span class="number">3</span>]+a5+item[<span class="number">4</span>]+a6</span><br><span class="line">    <span class="keyword">if</span> eval(c) == <span class="number">24</span>:</span><br><span class="line">        print(c+<span class="string">' = 24'</span>)</span><br></pre></td></tr></table></figure>
-<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>一句话：通过排列组合的方式，遍历所有可能性，输出符合条件的表达式。<br>代码具体分析：</p>
-<ul>
-<li><p><code>a1, a2, a3, a4, a5, a6 = a.split(&#39; &#39;)</code><br>链式赋值</p>
-</li>
-<li><p><code>l = list(product(i, repeat=5))</code><br>这行代码的意思是将“+-*/空格”进行排列组合（自身笛卡尔积），遍历其组成5个元素时的排列组合所有情况（因为a1到a6之间的间隙为5，所以这里repeat次数为5）。</p>
-</li>
-</ul>
-<p>简单的案例：</p>
-   <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> itertools.product(<span class="string">'ABCD'</span>, repeat=<span class="number">2</span>):</span><br><span class="line">  <span class="keyword">print</span> (<span class="string">''</span>.join(i),end=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
-<p>   输出结果：AA AB AC AD BA BB BC BD CA CB CC CD DA DB DC DD </p>
-<p>函数具体理解：</p>
-<p>  product 用于求多个可迭代对象的笛卡尔积(Cartesian Product)。</p>
-<p>  特性：product(A, B) 等价于 ((x,y) for x in A for y in B)。</p>
-<p>   一般使用形式：</p>
-<p>  itertools.product(*iterables, repeat=1) </p>
-<p>  iterables是可迭代对象,repeat指定iterable重复几次。</p>
-<p>相关链接：</p>
-<ul>
-<li><a href="https://python.01314.cn/tag/product" target="_blank" rel="noopener">python itertools模块实现排列组合</a></li>
-<li><a href="https://jingyan.baidu.com/article/154b46318c269d69ca8f41a6.html" target="_blank" rel="noopener">快速理解笛卡尔积</a></li>
-</ul>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>这是人工智能课（我的选修课，不是我的专业课）上布置的小作业，作业具体要求是：</p>
-<p>请在数字之间填上加减乘除或者空这五种符号，让等式可以成立，1 2 3 … 9 = 2008（空符号就是把两位或多位数字合成一个数字）</p>
-<p>作业源码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line">a = <span class="string">'1 2 3 4 5 6 7 8 9'</span></span><br><span class="line">a1, a2, a3, a4, a5, a6, a7, a8, a9 = a.split(<span class="string">' '</span>)</span><br><span class="line">i = [<span class="string">''</span>, <span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]</span><br><span class="line">l = list(product(i, repeat=<span class="number">8</span>))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> l:</span><br><span class="line">    c = a1+item[<span class="number">0</span>]+a2+item[<span class="number">1</span>]+a3+item[<span class="number">2</span>]+a4+item[<span class="number">3</span>]+a5+item[<span class="number">4</span>]+a6+item[<span class="number">5</span>]+a7+item[<span class="number">6</span>]+a8+item[<span class="number">7</span>]+a9</span><br><span class="line">    <span class="keyword">if</span> eval(c) == <span class="number">2008</span>:</span><br><span class="line">        print(c+<span class="string">' = 2008'</span>)</span><br></pre></td></tr></table></figure>
-
-<p>输出结果：</p>
-<p>1+2+345*6+7-8*9 = 2008<br>1+2+345*6-7*8-9 = 2008</p>
-]]></content>
-      <categories>
-        <category>程序设计</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>原创</tag>
-        <tag>Python3</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>用hexo搭建博客</title>
     <url>/hexo/2020-05-04/%E7%94%A8hexo%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="为什么我选择用hexo搭建博客，以及一些个人经验"><a href="#为什么我选择用hexo搭建博客，以及一些个人经验" class="headerlink" title="为什么我选择用hexo搭建博客，以及一些个人经验"></a>为什么我选择用hexo搭建博客，以及一些个人经验</h1><h2 id="写在前面的话"><a href="#写在前面的话" class="headerlink" title="写在前面的话"></a>写在前面的话</h2><h3 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h3><p>前些阵子，网上冲浪的时候，我刷到了其他人的博客，唤起了我很多的回忆，踌躇良久，决定重新搭建一个个人博客。<br>为什么说是重新呢？因为以前我用Wordpress搭建过相关的博客。那个时候我租的服务器在欧洲，国内访问还比较慢，再加上学业繁忙无心经营、租服务器的支出较大，渐渐地，在服务器以及域名过期后，我没有续租了。<br>现在留给我的大概只有空间相册中保存的这两张图片了吧。<br><img src="/img/z91.jpg" alt="古早Wordpress博客手机端界面预览图1"><br><img src="/img/z92.jpg" alt="古早Wordpress博客手机端界面预览图2"></p>
@@ -208,6 +165,49 @@
         <tag>教程</tag>
         <tag>原创</tag>
         <tag>计算机图形学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用Python3写万能论证机</title>
+    <url>/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/2020-05-05/%E7%94%A8Python3%E5%86%99%E4%B8%87%E8%83%BD%E8%AE%BA%E8%AF%81%E6%9C%BA/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h1><p><img src="/img/114514.png" alt="xiaoguotu"><br>目的：等号左侧任意给定数，右侧给定数，输出以左侧数字经过一定运算达到的等式。</p>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line"><span class="comment">#万  能  论  证  机</span></span><br><span class="line">a = <span class="string">'1 1 4 5 1 4'</span></span><br><span class="line">a1, a2, a3, a4, a5, a6 = a.split(<span class="string">' '</span>)</span><br><span class="line">i = [<span class="string">''</span>, <span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]</span><br><span class="line">l = list(product(i, repeat=<span class="number">5</span>))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> l:</span><br><span class="line">    c = a1+item[<span class="number">0</span>]+a2+item[<span class="number">1</span>]+a3+item[<span class="number">2</span>]+a4+item[<span class="number">3</span>]+a5+item[<span class="number">4</span>]+a6</span><br><span class="line">    <span class="keyword">if</span> eval(c) == <span class="number">24</span>:</span><br><span class="line">        print(c+<span class="string">' = 24'</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>一句话：通过排列组合的方式，遍历所有可能性，输出符合条件的表达式。<br>代码具体分析：</p>
+<ul>
+<li><p><code>a1, a2, a3, a4, a5, a6 = a.split(&#39; &#39;)</code><br>链式赋值</p>
+</li>
+<li><p><code>l = list(product(i, repeat=5))</code><br>这行代码的意思是将“+-*/空格”进行排列组合（自身笛卡尔积），遍历其组成5个元素时的排列组合所有情况（因为a1到a6之间的间隙为5，所以这里repeat次数为5）。</p>
+</li>
+</ul>
+<p>简单的案例：</p>
+   <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> itertools.product(<span class="string">'ABCD'</span>, repeat=<span class="number">2</span>):</span><br><span class="line">  <span class="keyword">print</span> (<span class="string">''</span>.join(i),end=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
+<p>   输出结果：AA AB AC AD BA BB BC BD CA CB CC CD DA DB DC DD </p>
+<p>函数具体理解：</p>
+<p>  product 用于求多个可迭代对象的笛卡尔积(Cartesian Product)。</p>
+<p>  特性：product(A, B) 等价于 ((x,y) for x in A for y in B)。</p>
+<p>   一般使用形式：</p>
+<p>  itertools.product(*iterables, repeat=1) </p>
+<p>  iterables是可迭代对象,repeat指定iterable重复几次。</p>
+<p>相关链接：</p>
+<ul>
+<li><a href="https://python.01314.cn/tag/product" target="_blank" rel="noopener">python itertools模块实现排列组合</a></li>
+<li><a href="https://jingyan.baidu.com/article/154b46318c269d69ca8f41a6.html" target="_blank" rel="noopener">快速理解笛卡尔积</a></li>
+</ul>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>这是人工智能课（我的选修课，不是我的专业课）上布置的小作业，作业具体要求是：</p>
+<p>请在数字之间填上加减乘除或者空这五种符号，让等式可以成立，1 2 3 … 9 = 2008（空符号就是把两位或多位数字合成一个数字）</p>
+<p>作业源码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> product</span><br><span class="line">a = <span class="string">'1 2 3 4 5 6 7 8 9'</span></span><br><span class="line">a1, a2, a3, a4, a5, a6, a7, a8, a9 = a.split(<span class="string">' '</span>)</span><br><span class="line">i = [<span class="string">''</span>, <span class="string">'+'</span>, <span class="string">'-'</span>, <span class="string">'*'</span>, <span class="string">'/'</span>]</span><br><span class="line">l = list(product(i, repeat=<span class="number">8</span>))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> l:</span><br><span class="line">    c = a1+item[<span class="number">0</span>]+a2+item[<span class="number">1</span>]+a3+item[<span class="number">2</span>]+a4+item[<span class="number">3</span>]+a5+item[<span class="number">4</span>]+a6+item[<span class="number">5</span>]+a7+item[<span class="number">6</span>]+a8+item[<span class="number">7</span>]+a9</span><br><span class="line">    <span class="keyword">if</span> eval(c) == <span class="number">2008</span>:</span><br><span class="line">        print(c+<span class="string">' = 2008'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<p>1+2+345*6+7-8*9 = 2008<br>1+2+345*6-7*8-9 = 2008</p>
+]]></content>
+      <categories>
+        <category>程序设计</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>原创</tag>
+        <tag>Python3</tag>
       </tags>
   </entry>
   <entry>
