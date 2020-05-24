@@ -266,12 +266,25 @@
 </li>
 <li><p>统计游戏时间：Time.time</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">timeUse &#x3D; Time.time-Global.sceneIITime;</span><br><span class="line">string s &#x3D; timeUse.ToString(&quot;f2&quot;);&#x2F;&#x2F;保留小数点后两位</span><br><span class="line"> GameObject.Find(&quot;Text&quot;).GetComponent&lt;Text&gt;().text &#x3D; s+&quot;s&quot;;</span><br></pre></td></tr></table></figure>
-
+</li>
+<li><p>暂停游戏时间</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Time.timescale &#x3D; 0</span><br><span class="line">    &#x2F;&#x2F;变回来：Time.timeScale &#x3D; 1;</span><br></pre></td></tr></table></figure>
 
 
 
 </li>
 </ol>
+<h2 id="UI相关"><a href="#UI相关" class="headerlink" title="UI相关"></a>UI相关</h2><p>1.改变文字</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GameObject.Find(&quot;TextII&quot;).GetComponent&lt;Text&gt;().text &#x3D; &quot;&quot;+stringI;</span><br></pre></td></tr></table></figure>
+
+<p>2.屏幕中心生成准星</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public Texture img;</span><br><span class="line">Rect rect;</span><br><span class="line">___start____</span><br><span class="line">rect &#x3D; new Rect(Screen.width &#x2F; 2 - img.width &#x2F; 2, Screen.height &#x2F; 2 - img.height &#x2F; 2, img.width, img.height);</span><br><span class="line">        Cursor.visible &#x3D; false;&#x2F;&#x2F;隐藏鼠标指针</span><br><span class="line">___________</span><br><span class="line">        void OnGUI()</span><br><span class="line">    &#123;</span><br><span class="line">        GUI.DrawTexture(rect, img);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
 <h2 id="生成物体相关"><a href="#生成物体相关" class="headerlink" title="生成物体相关"></a>生成物体相关</h2><ol>
 <li><p>Instantiate(prefab, position, Quaternion.identity);//在position处生成prefab</p>
 </li>
@@ -281,10 +294,48 @@
 <li><p>消失：Destroy(this.gameObject, 15f);</p>
 <p>​            或Destroy(this.gameObject,);</p>
 </li>
+<li><p>获取物体位置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GameObject.Find(&quot;Character&quot;).GetComponent&lt;Transform&gt;().position</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成子对象</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Instantiate(要生成的预制体, 父对象.transfrom);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
 </ol>
+<h2 id="场景相关"><a href="#场景相关" class="headerlink" title="场景相关"></a>场景相关</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using UnityEngine.SceneManagement;</span><br><span class="line">SceneManager.LoadScene(&quot;Play&quot;);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="键盘监听"><a href="#键盘监听" class="headerlink" title="键盘监听"></a>键盘监听</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (Input.GetKey(KeyCode.E))&#123; &#125;</span><br><span class="line">Input.GetKeyDown(KeyCode.A)      &#x2F;&#x2F;A键的按下检测</span><br><span class="line">Input.GetKeyUp(KeyCode.Space)      &#x2F;&#x2F;空格键按下检测</span><br></pre></td></tr></table></figure>
+
+<h2 id="鼠标相关"><a href="#鼠标相关" class="headerlink" title="鼠标相关"></a>鼠标相关</h2><ol>
+<li>锁定鼠标</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Cursor.lockState &#x3D; CursorLockMode.None;&#x2F;&#x2F;解锁</span><br><span class="line">Cursor.lockState &#x3D; CursorLockMode.Locked;&#x2F;&#x2F;锁定</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>鼠标监听</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if (Input.GetMouseButton(0))&#x2F;&#x2F;左键</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="角色运动"><a href="#角色运动" class="headerlink" title="角色运动"></a>角色运动</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GameObject.Find(&quot;Character&quot;).GetComponent&lt;Transform&gt;().rotation&#x3D; Quaternion.Euler(90,0,0);&#x2F;&#x2F;旋转</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="数学相关"><a href="#数学相关" class="headerlink" title="数学相关"></a>数学相关</h2><ol>
 <li>强制类型转换：string s = 变量a.ToString();//变量a强制转换成字符串</li>
 </ol>
+<h2 id="常用引用空间"><a href="#常用引用空间" class="headerlink" title="常用引用空间"></a>常用引用空间</h2><p>using UnityEngine.SceneManagement;<br>using UnityEngine.UI;</p>
+<h2 id="邪神绿皮火车必备"><a href="#邪神绿皮火车必备" class="headerlink" title="邪神绿皮火车必备"></a>邪神绿皮火车必备</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">public class Global : MonoBehaviour</span><br><span class="line">&#123;</span><br><span class="line">    public static bool flagII &#x3D; false;&#x2F;&#x2F;全局静态；在xx中调用</span><br><span class="line">    &#x2F;&#x2F;调用：Global.flagII</span><br><span class="line">    &#x2F;&#x2F;一定要说明在哪几个脚本中调用到了</span><br><span class="line">    &#x2F;&#x2F;常备：Debug.Log(&quot;生成了&quot;);</span><br><span class="line">    &#x2F;&#x2F;配乐直接挂个audio source在空物体上 要有配乐就直接生成</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GameObject.Find(&quot;ObjectName&quot;).GetComponent&lt;scriptName&gt;().enabled&#x3D;true&#x2F;false;&#x2F;&#x2F;禁用启用脚本</span><br><span class="line">&#x2F;&#x2F;SceneManager.LoadScene(&quot;scene1&quot;);</span><br><span class="line">&#x2F;&#x2F;Application.Quit();</span><br><span class="line">    private GameObject buttonObjI;</span><br><span class="line">    private GameObject buttonObjII;</span><br><span class="line">        buttonObjI &#x3D; GameObject.Find(&quot;Button&quot;);</span><br><span class="line">        buttonObjI.GetComponent&lt;Button&gt;().onClick.AddListener(yes);</span><br><span class="line">        buttonObjII &#x3D; GameObject.Find(&quot;ButtonII&quot;);</span><br><span class="line">        buttonObjII.GetComponent&lt;Button&gt;().onClick.AddListener(no);</span><br><span class="line">&#x2F;&#x2F;强制转动摄像头</span><br><span class="line">GameObject.Find(&quot;Main Camera&quot;).GetComponent&lt;Transform&gt;().transform.LookAt(GameObject.Find(&quot;SphereGeo&quot;).GetComponent&lt;Transform&gt;().position);</span><br><span class="line">transform.forward&#x2F;up&#x2F;right</span><br><span class="line">        void OnCollisionEnter(Collision collision)</span><br><span class="line">    &#123;</span><br><span class="line">        &#x2F;&#x2F;Debug.Log(&quot;2&quot;);</span><br><span class="line">       </span><br><span class="line">        &#x2F;&#x2F;这个响了</span><br><span class="line">    &#125;</span><br><span class="line">    void OnTriggerEnter(Collision collision)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(&quot;2&quot;); </span><br><span class="line">    &#125;</span><br><span class="line">&#x2F;&#x2F;手动盒体</span><br><span class="line">        float tempxI &#x3D; this.transform.position.x;</span><br><span class="line">        float tempyI &#x3D; this.transform.position.y;</span><br><span class="line">        if (tempxI &lt;&#x3D; x + 5 &amp;&amp; tempxI &gt;&#x3D; x - 5 &amp;&amp; tempyI &lt;&#x3D; y + 5 &amp;&amp; tempyI &gt;&#x3D; y - 5)</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h2 id="手机端UI不适配"><a href="#手机端UI不适配" class="headerlink" title="手机端UI不适配"></a>手机端UI不适配</h2><p>修改Canvas面板中的Canvas Scaler属性（没有就加组件）：</p>
 <ul>
 <li>UI Scale Mode:Match Width Or Height</li>
@@ -292,12 +343,25 @@
 <li>Match:0.5</li>
 </ul>
 <h2 id="模型调整相关"><a href="#模型调整相关" class="headerlink" title="模型调整相关"></a>模型调整相关</h2><ol>
-<li>轴心不在轴心（？）<ol>
+<li><p>轴心不在轴心（？）</p>
+<ol>
 <li>建立个空物体，调整其坐标到想要的轴心位置</li>
 <li>模型成为此空物体的子物体即可</li>
 </ol>
 </li>
+<li><p>模型大小&amp;旋转匹配</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.transform.localScale &#x3D; new Vector3(29,29,29);</span><br><span class="line">this.transform.rotation &#x3D; Quaternion.Euler(-180f, 0f, 0f);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
 </ol>
+<h2 id="UI生成"><a href="#UI生成" class="headerlink" title="UI生成"></a>UI生成</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Instantiate(prefabUI, GameObject.Find(&quot;Canvas&quot;).GetComponent&lt;Transform&gt;());</span><br></pre></td></tr></table></figure>
+
+<p> 解决了UI位置生成的问题</p>
+<h2 id="射线检测没用"><a href="#射线检测没用" class="headerlink" title="射线检测没用"></a>射线检测没用</h2><p>is trigger不能勾选</p>
+<h2 id="碰撞体相关"><a href="#碰撞体相关" class="headerlink" title="碰撞体相关"></a>碰撞体相关</h2><h3 id="OnCollisionEnter方法被触发要符合以下条件"><a href="#OnCollisionEnter方法被触发要符合以下条件" class="headerlink" title="OnCollisionEnter方法被触发要符合以下条件"></a>OnCollisionEnter方法被触发要符合以下条件</h3><p> 1 碰撞双方必须是碰撞体<br> 2 碰撞的主动方必须是刚体，注意我的用词是主动方，而不是被动方<br> 3 刚体不能勾选IsKinematic<br> 4 碰撞体不能够勾选IsTigger<br> OnCollisionEnter方法的形参对象指的是碰撞双方中没有携带OnCollisionEnter方法的一方</p>
+<h3 id="OnTriggerEnter触发条件"><a href="#OnTriggerEnter触发条件" class="headerlink" title="OnTriggerEnter触发条件"></a>OnTriggerEnter触发条件</h3><p>1碰撞双方都必须是碰撞体<br>2碰撞双方其中一个碰撞体必须勾选IsTigger选项<br>3碰撞双方其中一个必须是刚体<br>4刚体的IsKinematic选项可以勾选也可以不勾选<br>只要满足上面两个条件，不管谁主动都会触发,OnTriggerEnter方法的形参对象指的是碰撞双方中没有携带OnTriggerEnter方法的一方 </p>
 ]]></content>
       <categories>
         <category>游戏开发</category>
