@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>《耻辱2》潜行玩法机制分析 | Perhacept's Blog</title><meta name="description" content="游戏的潜行玩法机制分析——以《耻辱2》为例 中文摘要 本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。本文通过对《耻辱2》这一游戏的潜行玩法机制进行逆向拆解，深究其魅力所在，为潜行游戏玩法设计提供理论支持。 关键词：潜行游戏 玩法机制 内核拆解 Research on Analysis of"><meta name="keywords" content="游戏设计,关卡设计"><meta name="author" content="Perhacept"><meta name="copyright" content="Perhacept"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="dns-prefetch" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="crossorigin"/><link rel="dns-prefetch" href="https://fonts.googleapis.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="dns-prefetch" href="//busuanzi.ibruce.info"/><meta name="twitter:card" content="summary"><meta name="twitter:title" content="《耻辱2》潜行玩法机制分析"><meta name="twitter:description" content="游戏的潜行玩法机制分析——以《耻辱2》为例 中文摘要 本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。本文通过对《耻辱2》这一游戏的潜行玩法机制进行逆向拆解，深究其魅力所在，为潜行游戏玩法设计提供理论支持。 关键词：潜行游戏 玩法机制 内核拆解 Research on Analysis of"><meta name="twitter:image" content="https://perhacept.github.io/img/backgroundI.png"><meta property="og:type" content="article"><meta property="og:title" content="《耻辱2》潜行玩法机制分析"><meta property="og:url" content="https://perhacept.github.io/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1/2021-03-03/%E3%80%8A%E8%80%BB%E8%BE%B12%E3%80%8B%E6%BD%9C%E8%A1%8C%E7%8E%A9%E6%B3%95%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/"><meta property="og:site_name" content="Perhacept's Blog"><meta property="og:description" content="游戏的潜行玩法机制分析——以《耻辱2》为例 中文摘要 本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。本文通过对《耻辱2》这一游戏的潜行玩法机制进行逆向拆解，深究其魅力所在，为潜行游戏玩法设计提供理论支持。 关键词：潜行游戏 玩法机制 内核拆解 Research on Analysis of"><meta property="og:image" content="https://perhacept.github.io/img/backgroundI.png"><meta property="article:published_time" content="2021-03-03T09:19:54.000Z"><meta property="article:modified_time" content="2021-03-03T09:27:22.073Z"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>var autoChangeMode = '1'
+var t = Cookies.get("theme")
+if (autoChangeMode == '1'){
+  var isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+  var isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+  var isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined){
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport){
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour < 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+  }
+  } else if (t == 'light') activateLightMode()
+  else activateDarkMode()
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="canonical" href="https://perhacept.github.io/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1/2021-03-03/%E3%80%8A%E8%80%BB%E8%BE%B12%E3%80%8B%E6%BD%9C%E8%A1%8C%E7%8E%A9%E6%B3%95%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/"><link rel="prev" title="unity常用api" href="https://perhacept.github.io/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/unity/2021-03-09/unity%E5%B8%B8%E7%94%A8api/"><link rel="next" title="知识地图专栏总目录" href="https://perhacept.github.io/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BE/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BEB/%E7%9B%AE%E5%BD%95/2021-03-03/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BE%E4%B8%93%E6%A0%8F%E6%80%BB%E7%9B%AE%E5%BD%95/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  highlightShrink: 'false',
+  isFontAwesomeV5: false,
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+  
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isSidebar: true  
+  }</script><noscript><style>
+#page-header {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="Perhacept's Blog" type="application/atom+xml">
+</head><body><canvas class="fireworks"></canvas><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">31</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">32</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">34</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-superpowers" aria-hidden="true"></i><span> 索引</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/webs/"><i class="fa-fw fa fa-bookmark-o"></i><span> 书签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fa fa-arrow-right on" id="toggle-sidebar" aria-hidden="true">     </i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#游戏的潜行玩法机制分析"><span class="toc-number">1.</span> <span class="toc-text">游戏的潜行玩法机制分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一、绪论"><span class="toc-number">2.</span> <span class="toc-text">一、绪论</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#（一）选题意义与创新点"><span class="toc-number">2.1.</span> <span class="toc-text">（一）选题意义与创新点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#（二）研究对象与方法"><span class="toc-number">2.2.</span> <span class="toc-text">（二）研究对象与方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#（三）研究意义"><span class="toc-number">2.3.</span> <span class="toc-text">（三）研究意义</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二、《耻辱2》潜行玩法机制的核心循环"><span class="toc-number">3.</span> <span class="toc-text">二、《耻辱2》潜行玩法机制的核心循环</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#三、《耻辱2》潜行玩法机制的内核拆解"><span class="toc-number">4.</span> <span class="toc-text">三、《耻辱2》潜行玩法机制的内核拆解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#四、《耻辱2》情境化下的潜行玩法机制-以“《耻辱2》第四关机关宅邸为例"><span class="toc-number">5.</span> <span class="toc-text">四、《耻辱2》情境化下的潜行玩法机制 -以“《耻辱2》第四关机关宅邸为例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#五、结语"><span class="toc-number">6.</span> <span class="toc-text">五、结语</span></a></li></ol></div></div></div><div id="body-wrap"><div class="post-bg" id="nav" style="background-image: url(/img/backgroundI.png)"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/">Perhacept's Blog</a></span><span class="pull_right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fa fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-superpowers" aria-hidden="true"></i><span> 索引</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/webs/"><i class="fa-fw fa fa-bookmark-o"></i><span> 书签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fa fa-bars fa-fw" aria-hidden="true"></i></a></span></span></div><div id="post-info"><div id="post-title"><div class="posttitle">《耻辱2》潜行玩法机制分析</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-03-03 17:19:54"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2021-03-03</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-03-03 17:27:22"><i class="fa fa-history" aria-hidden="true"></i> 更新于 2021-03-03</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/">游戏研究</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/">游戏策划</a><i class="fa fa-angle-right post-meta__separator" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1/">机制设计</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="fa fa-eye post-meta__icon" aria-hidden="true"> </i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></div><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="游戏的潜行玩法机制分析"><a href="#游戏的潜行玩法机制分析" class="headerlink" title="游戏的潜行玩法机制分析"></a>游戏的潜行玩法机制分析</h1><p><strong>——以《耻辱2》为例</strong></p>
+<p><strong>中文摘要</strong></p>
+<p>本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。本文通过对《耻辱2》这一游戏的潜行玩法机制进行逆向拆解，深究其魅力所在，为潜行游戏玩法设计提供理论支持。</p>
+<p><em>关键词</em>：潜行游戏 玩法机制 内核拆解</p>
+<p><strong><em>Research on Analysis of Gameplay Mechanics of Stealth</em></strong> <strong><em>Game</em></strong></p>
+<p><strong><em>–Take “Dishonored 2” as an example</em></strong></p>
+<p><strong><em>\</em>Abstract**</strong></p>
+<p>This paper dismantles gameplay mechanics of the stealth game down to the bottom, and connects the important components of the gameplay mechanics from the core to the presentation, and analyzes the essence of the stealth gameplay mechanics of “Dishonored 2” in terms of the specific level design of “Dishonored 2”. This paper provides theoretical support for stealth gameplay design by reverse dismantling the stealth gameplay mechanism of “Dishonored 2” and deeply investigating its charm.</p>
+<p><strong><em>\</em>Keywords**</strong>: stealth game, gameplay mechanism, kernel disassembly</p>
+<h1 id="一、绪论"><a href="#一、绪论" class="headerlink" title="一、绪论"></a>一、绪论</h1><h2 id="（一）选题意义与创新点"><a href="#（一）选题意义与创新点" class="headerlink" title="（一）选题意义与创新点"></a>（一）选题意义与创新点</h2><p>近年来，电子游戏产业迅猛发展，而潜行游戏是其中的热门游戏门类之一。基于我的专业背景，本文将通过《耻辱2》这一热门游戏，对潜行游戏的玩法机制进行研究，并挖掘令《耻辱2》杰出并成为该游戏门类佼佼者的潜行机制特色。</p>
+<p>本文的创新点在于，本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。</p>
+<h2 id="（二）研究对象与方法"><a href="#（二）研究对象与方法" class="headerlink" title="（二）研究对象与方法"></a>（二）研究对象与方法</h2><p>本文的研究对象为《耻辱2》中的潜行玩法机制设计。研究方法主要为以下三类：</p>
+<p>(1)文献分析法：通过分析对比相关文献，辅助本文的修改与撰写。</p>
+<p>(2)书籍报刊分析法：通过分析对比相关书籍与报刊，辅助本文的修改与撰写。为本文的论点进行论据支持。</p>
+<p>(3)归纳研究法：以玩法机制的内核到表现方式为路线，分析归纳《耻辱2》中潜行机制的内在运行特点。</p>
+<h2 id="（三）研究意义"><a href="#（三）研究意义" class="headerlink" title="（三）研究意义"></a>（三）研究意义</h2><p>我国是亚洲第三大游戏产业国，而潜行游戏这一游戏门类在我国仍是一片蓝海。本文将通过对《耻辱2》这一游戏的潜行玩法机制进行逆向拆解，深究其魅力所在，为潜行游戏玩法设计和对外文化输出提供理论支持。</p>
+<h1 id="二、《耻辱2》潜行玩法机制的核心循环"><a href="#二、《耻辱2》潜行玩法机制的核心循环" class="headerlink" title="二、《耻辱2》潜行玩法机制的核心循环"></a><strong>二、《耻辱2》潜行玩法机制的核心循环</strong></h1><p>《耻辱2》是一款以潜行玩法为主要玩点的第一人称潜行游戏。除潜行机制以外，游戏有任务系统、角色技能系统等，玩家需要在有限的空间内进行有选择的移动，利用角色技能以完成任务目标。</p>
+<p>玩家玩电子游戏的行为是一种人机交互行为，而这种交互行为往往涉及一种“交互循环”。这是一个“两个活跃的个体交替地（且是比喻性地）聆听、思考以及讲述的循环过程”。交互循环的留存时间较为短暂，而这样的交互循环贯穿了游戏的整个进程，是游戏循环的组成部分（如图1）。游戏循环，广泛被认为是“由此至终贯穿游戏过程的一序列活动”。在《耻辱2》中，该游戏玩法机制的核心循环以“潜行 - 逃离”为主。</p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps1.jpg" alt="img"> </p>
+<p>图 1</p>
+<p>在《耻辱2》中，玩家在进行游玩时，需要解决的难题不仅仅为“如何不被敌人发现”、还有“即将被敌人发现该如何应对”、“被敌人发现后该如何应对”、“如何使敌人消除警戒”。而这些难题均来自同一个游戏目标——“保持潜行状态”。“不被敌人发现”是潜行状态，“即将被敌人发现”是从潜行到逃离的中间状态，“被敌人发现”是逃离状态，“敌人渐渐消除警戒”是逃离到潜行的中间状态（如图2）。</p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps2.jpg" alt="img"> </p>
+<p>图 2</p>
+<p>玩家需要在有限的游戏场景中进行一系列有选择、策略性的移动，从而重复“潜行 - 逃离”的核心循环，以获得或短时或长时的“心流体验”。短时的心流体验，持续时间可以只有几毫秒，通常不超过一分钟，可以反复发生在游戏的任何一段或多段交互循环中。在《耻辱2》中，短时的心流体验通常由一种不被敌人发现的潜行状态中所带来的隐秘快感的即时反馈来提供，这来自人类最原始的捕猎、躲藏本能，从游戏诞生初便早已深深刻入人类的DNA中。而长时的心流体验往往是具有阶段性质而注重于过程的，持续时间以小时为单位。正如“游戏的好玩之处在于它们为玩家们提供了通过自己的努力来影响结果的机会”，《耻辱2》核心循环设计的精妙之处便在于，它将“潜行 - 逃离”之间的状态切换权交予玩家，并将玩家置于长时稳定的心流状态之中。此外，潜行失败所带来的代价越高、越具体，玩家专注度越高，也越能使玩家沉浸于短时或长时的心流体验之中</p>
+<p>值得一提的是，《耻辱2》中，潜行相关的游戏机制不仅仅停留于躲藏，为了保持潜行状态，玩家需要应对发现自己的敌人和复杂情境下的障碍，使用到的手段包括但不限于击杀、击晕敌人、改变场景布局、利用场景道具、使用角色能力等。通常情况下，不击杀一个敌人而通关，在潜行游戏中能得到较高程度的评价。这也体现了潜行游戏的设计倾向，是不鼓励玩家通过暴力手段通关的，其更鼓励玩家处于长期的潜行状态，而不是长期的逃离状态。不仅仅游戏评分系统不支持玩家长期处于逃离状态，玩家所操控角色的各项参数也不支持玩家长期处于逃离状态。潜行游戏中，玩家所操控的角色相对于敌人，往往是处于弱势地位的。跟市面上流行的动作冒险游戏的设计核心截然相反，潜行游戏强调玩家玩游戏过程中所获得的长时心流体验来自玩家所处的潜行状态，而不是从杀戮与消灭等暴力行为所带来的成就中获取。</p>
+<p>在《耻辱2》中，游戏内部有混乱值这一数据项，当玩家杀的敌人人数过多，这一数据项的值便会越高。想要达到相对的完美结局，需要主角保持较低的混乱值的情况下通关。《耻辱2》中，玩家长期处于逃离状态只有一种情况，便是玩家选择了高混乱值的杀戮路线。高混乱值的杀戮路线也是需要玩家进行潜行策略的，但耻辱2中的杀戮机制并不是本文主要的讨论对象。本文核心关注点在于导致玩家因处于潜行状态而获得的短时与长时的心流体验的潜行玩法机制。</p>
+<p>综上，本章探讨了《耻辱2》的核心循环，并基于此，探讨了《耻辱2》潜行玩法机制的核心设计需求。“潜行 - 逃离”是《耻辱2》潜行玩法机制的核心循环，而其玩法机制的核心设计需求便是：玩家在有限的空间内进行有选择的移动，并维持在“潜行”状态下，获得心流体验。本文主要探讨的便是处于“潜行”状态下，使得玩家获得短时与长时心流体验的《耻辱2》中的潜行玩法机制。</p>
+<h1 id="三、《耻辱2》潜行玩法机制的内核拆解"><a href="#三、《耻辱2》潜行玩法机制的内核拆解" class="headerlink" title="三、《耻辱2》潜行玩法机制的内核拆解"></a>三、《耻辱2》潜行玩法机制的内核拆解</h1><p>《耻辱2》潜行玩法机制的核心设计需求是：玩家在有限的空间内进行有选择的移动，并通过维持“潜行”状态，以获得心流体验。从游戏的核心设计需求中，可以提炼的到的关键元素有“有限空间”、“有选择的移动”、“维持‘潜行’状态”。</p>
+<p>首先，玩家的主要交互方式是通过鼠标和键盘，在游戏所塑造的虚拟三维空间中进行有选择的移动。玩家需要改变自己的位置，以防止被敌人发现，维持潜行状态，从而实现游戏设计师设计出的游戏目标，获得正向反馈和心流体验。这个过程中，需要玩家进行脑力活动和体力活动。玩家需要在短时间内作出判断，选择行为策略，也就是选择进行何种游戏行为。在《耻辱2》中，玩家需要基于游戏给出的信息进行分析，选择合适的行径路线和完成路线的方式。而如何完成路线需要玩家进行体力活动，也就是即时且精确的交互输入。在《耻辱2》中，鼠标和键盘协同控制着玩家移动的方向，键盘控制玩家移动模式与时长，鼠标控制玩家的视野范围。精确的交互输入不仅需要玩家把握摁下按键的时机，还需要玩家把控摁按键的时长或是鼠标晃动范围。游戏可以抽象视作为一种学习技能并验证的过程。玩家通过技巧实现游戏目的，这之间能带来短时或长时的心流体验。玩家可以从这种对技巧的考验与目标的实现的正向反馈中获得愉快的体验。由此，提炼出的潜行玩法的玩点主要有两个方面：对玩家脑力的考验、对玩家输入能力的考验。而每个方面对玩家技巧的需要又各有几点（如表1）。</p>
+<table>
+<thead>
+<tr>
+<th>固有能力</th>
+<th>目标</th>
+<th>玩家技巧</th>
+<th>游戏内影响因子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脑力</td>
+<td>选择路线</td>
+<td>信息综合</td>
+<td>可选路径数信息易得性信息量</td>
+</tr>
+<tr>
+<td>信息分析</td>
+<td>信息冗余度信息可理解性</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>策略选择</td>
+<td>策略可选性策略复杂性</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>输入能力</td>
+<td>执行选择完成路线</td>
+<td>即时输入</td>
+<td>应答时间</td>
+</tr>
+<tr>
+<td>即量输入</td>
+<td>宽容度范围</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong><em>\</em>表1**</strong></p>
+<p>以上对玩家技巧分析是为基于此分析得出游戏内直接影响玩家游戏行为动机或是对玩家输入进行反馈的影响因子的主要成分（如表1）。玩家需要基于游戏反馈从而修正游戏行为，以提升技巧，达成游戏目标。减少可选路径数，降低信息易得性，增加信息冗余度，降低信息可理解性，增加策略复杂性，缩小输入宽容度等，都能增加游戏的难度，阻碍玩家达成目标。除此以外，游戏中的NPC敌人是阻碍玩家达成目标的最主要因素。</p>
+<p>通常情况下，玩家的危机感主要来源于NPC敌人的搜查。玩家需要躲避敌人的搜查，以达成目标。</p>
+<p>一般来说，游戏中的普通敌人NPC有三种状态——巡逻、警觉、察觉。这种状态的切换受警戒度的影响。基本上每个普通敌人NPC都有各自的警戒度。巡逻状态是指，敌人在警戒度很低的情况下，沿着固定的路线进行移速相对较慢的移动。警觉状态是指，敌人在警戒度相对较高的状态下，改变行走路线，在一定范围内进行移速较快的移动，表现起来像是在搜寻玩家。敌人处于警觉状态时，玩家需要降低敌人的警觉度。若敌人的警觉度到达了满值，则敌人会切换到察觉状态。而察觉状态是指，敌人“察觉”到了玩家的存在，直接向玩家所操纵角色的方向进行相对快速的移动或是改变巡逻路线进行相对快速的移动，并具有攻击性，无法回到巡逻状态（如图3）。敌人的状态不同，敌人对玩家的威胁程度、阻碍玩家达成目标的能力也不同。</p>
+<p>影响敌人警戒度的因素多种多样。《耻辱2》中，敌人NPC模拟人类的感知能力，主要通过听觉、视觉等多方面的“感知”来“发现”玩家，增加警戒度数值。敌人NPC模拟了人类的视野，只要敌人“看”到玩家的部分达到某一阈值，敌人便拉起警戒，“察觉”到玩家的存在。《耻辱2》中，主要是通过射线检测来模拟人类视野的方式检测视野范围内的玩家是否达到了这个阈值的。NPC敌人的视野一般是一系列的锥形区域，而锥形区域内部又划分层级。《耻辱2》中，这些不同区域对敌人警戒度上升速度的影响程度各不相同。另外，敌人警戒度的值还由玩家的行走状态影响。在相同的情境下，《耻辱2》中，蹲伏难以引起NPC警诫值的升高，而直立行走、直立快跑能引起NPC警戒度的值不同程度的快速升高。敌人NPC还模拟了人类的听觉。《耻辱2》中，玩家可以通过道具制造声响，改变NPC的行走路线，使NPC从巡逻状态切换为警觉状态，吸引NPC去声响发出的区域进行搜寻。玩家的站起状态会发出脚步声，也会提高NPC的警戒度，吸引NPC前往声源处查看。更复杂的，还有玩家对环境的改变，也能引起敌人的警诫。《耻辱2》在稍高难度下需要玩家将击晕的NPC挪到隐秘的角落，否则倒地的NPC可能被敌人察觉，从而使得敌人警戒度的值快速升高，切换到警觉或是察觉状态。此外，警诫条通常会以UI的形式显现在敌人头部，给予玩家提示信息（如图3）。</p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps3.jpg" alt="img"> </p>
+<p>图 3</p>
+<p>对于敌人而言，游戏中影响敌人发现玩家的主要因素有：玩家离敌人的距离、玩家与敌人间的掩体、敌人移动速度、敌人视野大小、玩家行走状态等。这些因素有的使警戒度上升，有的使警戒度上升速度提高，有的则不仅提升警戒度，还加快警戒度的提升速度。然而，这些都可以简单抽象为三个内核因素：玩家在敌人视野中的尺寸、玩家相对敌人移动速度、玩家进入敌人视野范围的可能性。此外，玩家进入敌人视野范围后，还需要一段时间才能使得敌人完全察觉到玩家。虽然说，玩家在敌人视野内暴露的时间也是重要因素，但是，游戏设计者主要设计并调控NPC敌人警戒度的阈值范围，而玩家暴露时间多少则是由玩家与游戏中多个影响因素综合决定，是不能受设计师直接调控的。并且，在游戏中没有记录或是调用到玩家在敌人视野内暴露时间的相关参数。因此，时间因素并不在游戏中使敌人发现玩家的影响因子的范畴内。游戏中，与之相关的更贴切的影响因子是玩家相对敌人的移动速度。</p>
+<p>综上，本章从玩家技巧出发，对《耻辱2》的潜行玩法机制进行内核拆解，将该机制玩点的影响因素拆解到最底层的几个要点：可选路径数、信息易得性、信息量、信息冗余度、信息可理解性、策略可选性、策略复杂性、应答时间、宽容度范围、玩家在敌人视野中的尺寸、玩家相对敌人移动速度、玩家进入敌人视野范围的可能性。其中，“可选路径数、信息冗余度、信息可理解性、策略可选性、策略复杂性、应答时间、宽容度范围”是可由设计师直接进行设计的。 而“玩家在敌人视野中的尺寸、玩家相对敌人移动速度、玩家进入敌人视野范围的可能性”通常是动态变化且受到前几个因素间接影响的，设计师虽不能直接进行设计，却能通过其他参数直接调控，且这三个影响因子直接关系到玩家的游戏体验并控制着玩家进入心流状态。</p>
+<h1 id="四、《耻辱2》情境化下的潜行玩法机制-以“《耻辱2》第四关机关宅邸为例"><a href="#四、《耻辱2》情境化下的潜行玩法机制-以“《耻辱2》第四关机关宅邸为例" class="headerlink" title="四、《耻辱2》情境化下的潜行玩法机制 -以“《耻辱2》第四关机关宅邸为例"></a>四、《耻辱2》情境化下的潜行玩法机制 -以“《耻辱2》第四关机关宅邸为例</h1><p>因游戏有了设计需求，而产生了游戏的核心循环，并基于此，设计师进行规则细化，通过改变一系列影响因子的值从而使得玩家产生短时的心流体验，并使其处于稳定长时的心流状态之中。然而，单纯的规则与数值如同无底之木，是需要通过游戏元素进行表现与依托的。《耻辱2》的第四关：机关宅邸是游戏中最为经典的一关，它将《耻辱2》的许多游戏机制结合起来，整体关卡设计十分优秀，地图设计也十分出彩（如图4），可变化的房间和布局更是赋予这一关别样的魅力（如图5）。本章将以《耻辱2》的第四关：机关宅邸为例，从潜行玩法的角度来分析潜行机制在这一关中的具体体现，并深入分析游戏元素及其在关卡中的组合形式与潜行机制玩点影响因素的内在联系。</p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps4.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>4**</strong></p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps5.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>5**</strong></p>
+<p>从游戏内部设计层面看，不同游戏元素对“玩家在敌人视野中的尺寸、玩家相对敌人移动速度、玩家进入敌人视野范围的可能性”的影响不同。将《耻辱2》中，第四关的游戏元素提取出，主要有：建筑、道具、敌人。</p>
+<p>建筑划分出玩家可移动空间。关卡中的建筑可以作为掩体，帮助玩家减少玩家在敌人视野中的尺寸，减少玩家进入敌人视野的可能性，也可能是玩家达成目标的障碍，需要玩家进行探索与解谜，从而找到并完成正确的行径路线。《耻辱2》具体的关卡设计中，提供了玩家进行竖直方向移动的空间，而大多数敌人是不能进行竖直方向的移动的。也就是说，玩家能到达绝大多数敌人无法到达的位置。这增加了玩家移动的可选路径数，增加玩家的移动性。如果玩家操作得当，这也在一定程度上减少玩家在敌人视野范围中出现的可能性以及玩家在敌人视野中的尺寸。</p>
+<p>关卡中的道具部分为玩家提供信息，部分能为玩家所用，影响环境、改变建筑物之间的相对位置等。如果利用不当，道具也会提高玩家进入敌人视野范围的可能性。</p>
+<p>在《耻辱2》第四关：机关宅邸中，主要有四种类型的敌人，这四种类型敌人的各方面参数不同，对玩点的影响也不同（如表2）。</p>
+<table>
+<thead>
+<tr>
+<th>敌人类型</th>
+<th>描述</th>
+<th>视野</th>
+<th>听力</th>
+<th>移动速度</th>
+<th>玩家进入敌人视野范围内可能性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通民众</td>
+<td>一般无攻击性，只有在主角抱着被击晕的NPC进入其视野范围内时或逗留其民居内时间长并被其察觉的情况下才会造成威胁。</td>
+<td>小</td>
+<td>弱</td>
+<td>慢</td>
+<td>小</td>
+</tr>
+<tr>
+<td>普通卫兵</td>
+<td>攻击性一般，只有前视野(如图9)</td>
+<td>中</td>
+<td>中</td>
+<td>中</td>
+<td>中</td>
+</tr>
+<tr>
+<td>精英卫兵</td>
+<td>攻击性一般，只有前视野</td>
+<td>大</td>
+<td>强</td>
+<td>快</td>
+<td>大</td>
+</tr>
+<tr>
+<td>发条骑士</td>
+<td>攻击性强，前后均有视野(如图6)</td>
+<td>极大</td>
+<td>极强</td>
+<td>极快</td>
+<td>极大</td>
+</tr>
+</tbody></table>
+<p><strong><em>\</em>表2**</strong></p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps6.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>6**</strong></p>
+<p>从玩家层面看，玩家的选择也能影响潜行玩法机制的玩点的具体表现。比如，在同种情境下，玩家所操控角色的状态不同，玩家出现在敌人视野中的可能性也不同（如表3）。《耻辱2》还综合了玩家角色技能机制和潜行玩法机制。玩家所操纵的角色有特殊能力，玩家需要自己分配技能点（如图7），来选择并决定发展方向。游戏中有符文道具和护符道具（如图8），均能不同程度地加强角色能力。玩家可以选择增强自己角色的潜行能力，选择低混乱值的潜行路线，也可以选择增强角色击杀敌人的能力，选择高混乱值的杀戮路线。玩家角色机制中，与游戏潜行机制相关的内容有许多。玩家可以点亮瞬移技能，加强自己在有限空间内的移动能力，以难度梯度逐渐上升的关卡。在具体的情境中，玩家如果点了透视技能（如图9），使用该技能，能令玩家看到敌人视野和敌人位置信息，技能增加了信息易得性，而该信息本身增加了信息量，为玩家进行策略规划提供帮助，一定程度上减少玩家在敌人视野范围中出现的可能性。</p>
+<table>
+<thead>
+<tr>
+<th>玩家状态</th>
+<th>玩家移速</th>
+<th>玩家尺寸</th>
+<th>玩家进入敌人视野范围内可能性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>蹲走</td>
+<td>慢</td>
+<td>小</td>
+<td>小</td>
+</tr>
+<tr>
+<td>起身走</td>
+<td>中</td>
+<td>中</td>
+<td>中</td>
+</tr>
+<tr>
+<td>起身跑</td>
+<td>快</td>
+<td>大</td>
+<td>大</td>
+</tr>
+</tbody></table>
+<p><strong><em>\</em>表3**</strong></p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps7.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>7**</strong></p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps8.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>8**</strong></p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps9.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>9**</strong></p>
+<p>“优秀的关卡设计，给予玩家自己调控游戏难度的能力。”《耻辱2》的难度曲线可由玩家的选择而动态调控。《耻辱2》中，游戏玩法机制的具体表现，是由玩家自己的选择所直接影响的。</p>
+<p>在《耻辱2》第四关：机关宅邸这一关中，游戏设计师提供了多种通关方式，而该关的难度与玩家选择达成目标的方式息息相关。玩家在该关的任务目标是“消灭金多希”和“解救索科洛夫”。通过关卡给出的线索，玩家可以通过游戏种的环境叙事了解到，金多希是一位恶名满贯的发明家，他用电击刑具折磨了许多人，其中就包括了他的老师，索科洛夫。玩家可以选择以眼还眼，达成任务目标，也可以选择直接消灭金多希。后者较为简单，而前者对玩家的潜行能力和战术策划能力有一定需求。而玩家进行具体的策略选择时，根据策略的不同，潜行机制的具体表现形式也会随之发生动态变化。</p>
+<p>关卡设计将游戏元素组合起来。将游戏元素置于具体情境中时，基于玩家的选择，不同元素对玩家潜行玩法机制体验的影响也产生了动态变化。《耻辱2》第四关：机关宅邸中，有着许多机关，玩家通过激活机关，能够改变建筑物的具体布局。玩家在不同时机拉动同一开关，可能将自己同对自己有较大威胁的敌人NPC限制在同一空间内，也能将自己同敌人隔离开来。这一关的其中一个情境，若是玩家选择走潜行路线的话，就具有较高挑战性——玩家需要操纵机关来升起或放下掩体，让自己不处于发条战士的视野范围内。玩家可以进行策略规划，选择何时改变何种建筑物，并何时使建筑物复原。</p>
+<p>《耻辱2》中的技能点需要玩家主动收集，且玩家的技能树是无法全部点亮的。也就是说，在游戏进程的中期，第四关：机关宅邸中，对玩家前期的资源规划能力也有一定考验。在这一关中，若是玩家规划得当，关卡难度能得到一定的降低，玩家能利用技能解决本无法通过的障碍。比如玩家可以用瞬移技能到达高处。这也就给玩家提供了更多的达成目标的路线。关卡中有多种路线提供玩家进行选择，玩家可以选择通过机关密布的房间，或是越过房间顶部的水管，或是干脆使用技能静止时间，在敌人之间穿行。</p>
+<p>选择不同方式达成任务目标，玩家的具体的策略也不同。多样的组合构成多样化的通关路径，不同的选择又使玩家的具体策略相异，再加上玩家技能的选择与前期资源配置，同种机制在这一情境下的表现更是丰富，带给玩家的体验也多变。</p>
+<p>这一关很好地平衡了游戏性、游戏叙事与游戏具体呈现，（如图10）通过环境叙事调动玩家情感，并以良好的世界架构使得游戏元素构成了和谐的整体。多种选择的交叠，多样化的呈现，元素的融合一体，使得单纯的游戏机制在具体的情景下得到良好的表现。</p>
+<p><img src="file:///C:%5CUsers%5C22757%5CAppData%5CLocal%5CTemp%5Cksohtml11748%5Cwps10.jpg" alt="img"> </p>
+<p><strong><em>\</em>图**</strong> <strong><em>\</em>10**</strong></p>
+<p>综上，本章结合了具体的游戏元素和关卡设计，先从游戏元素的角度出发，深入分析《耻辱2》中潜行玩法机制的内核在不同元素中的变化与表现。之后，再以《耻辱2》第四关：机关宅邸为例，通过关卡中游戏元素的组合和潜行玩法机制的具体表现，分析潜行玩法机制内核在具体情境下的动态变化。</p>
+<h1 id="五、结语"><a href="#五、结语" class="headerlink" title="五、结语"></a><strong>五、结语</strong></h1><p>本文着重点在于《耻辱2》的潜行玩法机制。《耻辱2》潜行玩法机制的核心循环是“潜行 - 逃离”，而其玩法机制的核心设计需求便是：玩家在有限的空间内进行有选择的移动，并维持在“潜行”状态下，获得心流体验。本文主要探讨的便是处于“潜行”状态下，使得玩家获得短时与长时心流体验的《耻辱2》中的潜行玩法机制。基于此，本文对潜行玩法机制进行了内核拆解，并通过潜行玩法机制的具体表现，分析潜行玩法机制内核在不同情境下的动态变化。</p>
+<p>本文的创新点在于，本文将潜行游戏的玩法机制拆解到底层，并串联玩法机制从内核到表现形式中的各个重要组成部分，结合《耻辱2》具体的关卡设计，深入分析《耻辱2》潜行玩法机制的本质。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Perhacept</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://perhacept.github.io/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1/2021-03-03/%E3%80%8A%E8%80%BB%E8%BE%B12%E3%80%8B%E6%BD%9C%E8%A1%8C%E7%8E%A9%E6%B3%95%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/">https://perhacept.github.io/%E6%B8%B8%E6%88%8F%E7%A0%94%E7%A9%B6/%E6%B8%B8%E6%88%8F%E7%AD%96%E5%88%92/%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1/2021-03-03/%E3%80%8A%E8%80%BB%E8%BE%B12%E3%80%8B%E6%BD%9C%E8%A1%8C%E7%8E%A9%E6%B3%95%E6%9C%BA%E5%88%B6%E5%88%86%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://perhacept.github.io" target="_blank">Perhacept's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1/">游戏设计</a><a class="post-meta__tags" href="/tags/%E5%85%B3%E5%8D%A1%E8%AE%BE%E8%AE%A1/">关卡设计</a></div><div class="post_share"><div class="social-share" data-image="/img/conf.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button button--primary button--animated"> <i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="post-qr-code__img" src="/img/wechat.jpg" alt="微信上表扬"/><div class="post-qr-code__desc">微信上表扬</div></li><li class="reward-item"><img class="post-qr-code__img" src="/img/qq.jpg" alt="QQ上表扬我"/><div class="post-qr-code__desc">QQ上表扬我</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/unity/2021-03-09/unity%E5%B8%B8%E7%94%A8api/"><img class="prev_cover" src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">unity常用api</div></div></a></div><div class="next-post pull_right"><a href="/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BE/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BEB/%E7%9B%AE%E5%BD%95/2021-03-03/%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BE%E4%B8%93%E6%A0%8F%E6%80%BB%E7%9B%AE%E5%BD%95/"><img class="next_cover" src="/img/conf.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">知识地图专栏总目录</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/学习笔记/游戏策划/关卡策划/2020-07-25/笔记-关卡设计师入门指南-杨佳阳老师/" title="笔记:关卡设计师入门指南-杨佳阳老师"><img class="relatedPosts_cover" src="/img/backgroundI.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-25</div><div class="relatedPosts_title">笔记:关卡设计师入门指南-杨佳阳老师</div></div></a></div><div class="relatedPosts_item"><a href="/学习笔记/游戏策划/机制设计/2020-11-03/GMTK：潜行游戏设计/" title="GMTK：潜行游戏设计"><img class="relatedPosts_cover" src="/img/backgroundI.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-11-03</div><div class="relatedPosts_title">GMTK：潜行游戏设计</div></div></a></div><div class="relatedPosts_item"><a href="/学习笔记/游戏策划/玩法策划/2020-07-29/读书笔记-《游戏感》/" title="读书笔记:《游戏感》"><img class="relatedPosts_cover" src="/img/backgroundI.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i> 2020-07-29</div><div class="relatedPosts_title">读书笔记:《游戏感》</div></div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'Uj8wNVG3WmgKV7dc3uHDPlfw-gzGzoHsz',
+  appKey: '4Bz6dj2IeRahz9Xe7G6VNYsW',
+  notify: false,
+  verify: false,
+  placeholder: '在这里留言',
+  avatar: 'retro',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-cn',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: false,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" style="background-image: url(/img/backgroundI.png)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Perhacept</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="/js/third-party/fireworks.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script id="ribbon_piao" mobile="false" src="/js/third-party/piao.js"></script><script id="canvas_nest" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="/js/third-party/canvas-nest.js"></script><script src="/js/third-party/activate-power-mode.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+document.body.addEventListener('input', POWERMODE);
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script></body></html>
